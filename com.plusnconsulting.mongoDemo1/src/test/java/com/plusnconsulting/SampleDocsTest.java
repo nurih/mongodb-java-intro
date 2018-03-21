@@ -9,10 +9,10 @@ import org.bson.*;
 
 import org.junit.jupiter.api.Test;
 
-public class SampleDocTest {
+public class SampleDocsTest {
     @Test
     public void fromParsedJson_CreatesBsonDocument() {
-        Document actual = SampleDoc.fromParsedJson();
+        Document actual = SampleDocs.fromParsedJson();
 
         assertEquals("shoe", actual.getString("name"));
         assertEquals(6, actual.getInteger("size", 0));
@@ -21,7 +21,7 @@ public class SampleDocTest {
 
     @Test
     public void fromFluentBuilders_CreatesBsonDocument() {
-        Document actual = SampleDoc.fromFluentBuilder();
+        Document actual = SampleDocs.fromFluentBuilder();
 
         assertEquals("shirt", actual.getString("name"));
         assertEquals("M", actual.getString("size"));

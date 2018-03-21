@@ -1,9 +1,12 @@
 package com.plusnconsulting;
 
 import static com.mongodb.client.model.Accumulators.avg;
-import static com.mongodb.client.model.Aggregates.*;
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Aggregates.group;
+import static com.mongodb.client.model.Aggregates.unwind;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.currentDate;
+import static com.mongodb.client.model.Updates.push;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +14,13 @@ import java.util.concurrent.TimeUnit;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.UpdateResult;
-import com.mongodb.rx.client.*;
+import com.mongodb.rx.client.AggregateObservable;
+import com.mongodb.rx.client.FindObservable;
+import com.mongodb.rx.client.MongoClient;
+import com.mongodb.rx.client.MongoClients;
+import com.mongodb.rx.client.MongoCollection;
+import com.mongodb.rx.client.MongoDatabase;
+import com.mongodb.rx.client.Success;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -39,10 +48,10 @@ public class App {
 
             // perform operations
             System.out.println("*** Insert doc 1");
-            insertOneDocument(collection, SampleDoc.fromParsedJson()).toBlocking().single();
+            insertOneDocument(collection, SampleDocs.fromParsedJson()).toBlocking().single();
 
             System.out.println("*** Insert doc 2");
-            insertOneDocument(collection, SampleDoc.fromFluentBuilder()).toBlocking().single();
+            insertOneDocument(collection, SampleDocs.fromFluentBuilder()).toBlocking().single();
 
             System.out.println("*** Update a doc");
             updateOneDocument(collection).toBlocking().single();
@@ -57,6 +66,9 @@ public class App {
 
             getRatings(collection).toObservable().subscribe(subscriber);
 
+
+            ///////////////
+            /// wait
             System.in.read();
 
         } catch (Exception e) {

@@ -1,6 +1,9 @@
 package com.plusnconsulting;
 
+import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.UUID;
 
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
@@ -9,7 +12,7 @@ import org.bson.BsonString;
 import org.bson.BsonValue;
 import org.bson.Document;
 
-public class SampleDoc {
+public class SampleDocs {
     public static Document fromParsedJson() {
 
         String json = "{" + " \"name\" : \"shoe\", " + "\"size\" : 6, " + "\"colors\" : [ \"taupe\", \"black\" ], "
@@ -24,7 +27,6 @@ public class SampleDoc {
 
         BsonValue rating = new BsonDocument("name", new BsonString("kim")).append("rating", new BsonDouble(4.0));
 
-     
         BsonArray ratings = new BsonArray(Arrays.asList(rating));
 
         Document result = new Document().append("name", "shirt").append("size", "M")
@@ -32,5 +34,12 @@ public class SampleDoc {
                 .append("ratings", ratings);
 
         return result;
+    }
+
+    public static final UUID serial = UUID.fromString("a0a0a0a0-beef-0000-7eee-acdcacdcf00d");
+
+    public static DeviceReading sampleDeviceData() {
+        return new DeviceReading(serial,
+                new double[] { 34.505898, -120.500595 }, new HashMap<String, Double>(), new Date());
     }
 }
