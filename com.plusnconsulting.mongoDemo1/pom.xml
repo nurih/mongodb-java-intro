@@ -30,10 +30,10 @@
       <artifactId>mongodb-driver-reactivestreams</artifactId>
       <version>1.12.0</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-rx</artifactId>
-      <version>${mongodb.driver.rx.version}</version>
-    </dependency> -->
+    <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver</artifactId>
+        <version>3.6.4</version>
+    </dependency>
   </dependencies>
 </project>
