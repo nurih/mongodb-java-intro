@@ -39,6 +39,16 @@ public class BasicsLab {
         CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
+        /******************************************/
+        /** CODE FOR LAB BELOW THIS POINT        **/
+        /******************************************/
+        
+        
+        
+        
+        
+        
+        
         // Close client
         // mongoClient.close();
     }
