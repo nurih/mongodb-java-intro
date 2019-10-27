@@ -1,5 +1,4 @@
-
-Getting Started Lab
+Getting Started with Java Lab
 ========
 
 ### Create a new project use Maven

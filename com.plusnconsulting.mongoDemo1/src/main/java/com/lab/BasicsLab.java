@@ -9,7 +9,10 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import com.mongodb.Block;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoClient;
+
+import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
@@ -33,10 +36,10 @@ public class BasicsLab {
      */
     public static void main(final String[] args) throws InterruptedException {
 
-        MongoClient mongoClient = new MongoClient("localhost");
+        MongoClient mongoClient = MongoClients.create("mongodb://localhost");
 
         // create codec registry for POJOs
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
+        CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         // get the "lab1" database
@@ -49,7 +52,7 @@ public class BasicsLab {
         String jsonDocument = "{\"_id\":{\"$oid\":\"5db5cf8058fb4c25c20cacc8\"},\"degree\":\"PHD\",\"grades\":[{\"grade\":100,\"subject\":\"maths\"},{\"grade\":93,\"subject\":\"history\"},],\"full_name\":\"Bob Throllup\",\"GPA\":\"B+\"}";
 
         Document bsonStudent = Document.parse(jsonDocument);
-        database.getCollection("people").insertOne(bsonStudent);
+        database.getCollection(COLLECTION_NAME).insertOne(bsonStudent);
 
         // get the strongly typed collection COLLECTION_NAME for a Student pojo
         final MongoCollection<Student> collection = database.getCollection(COLLECTION_NAME, Student.class);
