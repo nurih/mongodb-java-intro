@@ -8,7 +8,6 @@ import static com.mongodb.client.model.Updates.set;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-import com.mongodb.Block;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 
@@ -55,7 +54,7 @@ public class BasicsLab {
         database.getCollection(COLLECTION_NAME).insertOne(bsonStudent);
 
         // get the strongly typed collection COLLECTION_NAME for a Student pojo
-        final MongoCollection<Student> collection = database.getCollection(COLLECTION_NAME, Student.class);
+        final MongoCollection<Student> studentCollection = database.getCollection(COLLECTION_NAME, Student.class);
 
         // make a document and insert it
         final Student chip = new Student();
@@ -63,41 +62,46 @@ public class BasicsLab {
         chip.degree = Degree.PHD;
         chip.grades.add(new Grade("maths", 100));
 
-        collection.insertOne(chip);
+        studentCollection.insertOne(chip);
 
-        Student found = collection.find(eq("full_name", chip.name)).first();
+        Student found = studentCollection.find(eq("full_name", chip.name)).first();
         System.out.println("Found student with id " + found.studentId);
 
-        collection.insertMany(StudentList.get());
+        studentCollection.insertMany(StudentList.get());
 
-        long count = collection.count();
+        long count = studentCollection.countDocuments();
 
         System.out.printf("Student count %d\n", count);
 
-        collection.find().forEach((Block<? super Student>) (Student d) -> {
+        studentCollection.find().forEach((Student d) -> {
             System.out.printf("\t==>> %s\n", d.name);
         });
 
-        collection.find().limit(3).forEach((Block<? super Student>) (Student d) -> {
+        studentCollection.find().limit(3).forEach((Student d) -> {
             System.out.printf("\t==>> %s\n", d.name);
         });
 
-        collection.find().sort(descending("grades.0.grade")).limit(3).forEach((Block<? super Student>) (Student d) -> {
+        studentCollection.find().sort(descending("grades.0.grade")).limit(3).forEach((Student d) -> {
             System.out.printf("High Score!  %s %d\n", d.name, d.grades.get(0).grade);
         });
 
-        collection.updateMany(lt("grades.grade", 70), set("needs_help", true));
+        studentCollection.updateMany(lt("grades.grade", 70), set("needs_help", true));
 
-        collection.find(eq("needs_help", true)).forEach((Block<? super Student>) (Student d) -> {
+        studentCollection.find(eq("needs_help", true)).forEach((Student d) -> {
             System.out.printf("Help %s (%d)\n", d.name, d.grades.get(0).grade);
         });
 
-        collection.updateOne(eq("full_name", "bob1"), set("full_name", "Smarty"), new UpdateOptions().upsert(true));
+        studentCollection.updateOne(eq("full_name", "bob1"), set("full_name", "Smarty"),
+                new UpdateOptions().upsert(true));
 
-        Student smarty = collection.find(eq("full_name", "Smarty")).first();
+        Student smarty = studentCollection.find(eq("full_name", "Smarty")).first();
         System.out.println("Found smarty" + smarty.studentId);
 
-        collection.updateMany(gt("grades.grade", 90), set("GPA", "A"));
+        studentCollection.updateMany(gt("grades.grade", 90), set("GPA", "A"));
+
+        long count_gpa_a = studentCollection.countDocuments(eq("GPA", "A"));
+
+        System.out.printf("Number of 'A' GPA: %d\n" , count_gpa_a);
 
         mongoClient.close();
     }
