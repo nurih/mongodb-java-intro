@@ -39,12 +39,12 @@ public class DistributedTransactionLab {
         /** CODE FOR LAB BELOW THIS POINT **/
         /******************************************/
         
-        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017/?replSet=trx");
+        MongoClient mongoClient = MongoClients.create("mongodb://replace.example.com/");
 
         MongoDatabase db = mongoClient.getDatabase(DATABASE_NAME);
 
         // Seed the database
-        seedDatabase(db);
+        
 
         final com.mongodb.client.ClientSession clientSession = mongoClient.startSession();
 
@@ -58,8 +58,7 @@ public class DistributedTransactionLab {
                 MongoCollection<Document> sales = db.getCollection(SALES_COLLECTION);
 
                 // Create a filter for a specific ticket.
-
-                Bson ticketFilter = and(eq("show", "Pink Martini"), eq("seat.row", 14), eq("seat.number", 31));
+                Bson ticketFilter = null;
 
                 Document ticket = tickets.find(ticketFilter).first();
 
@@ -73,15 +72,12 @@ public class DistributedTransactionLab {
 
                 // Set the soldTo field to the value "zelda" in the tickets collection
 
-                tickets.updateOne(clientSession, ticketFilter, set("soldTo", "zelda"));
 
                 // Create a sale document from the ticket, and assign it to "zelda"
 
-                Document sale = createSaleDocument(ticket, "zelda");
                 
                 // Insert the sale document into the sales collection
 
-                sales.insertOne(clientSession, sale);
 
                 return "Sale Complete";
             }
@@ -92,9 +88,6 @@ public class DistributedTransactionLab {
             // Print out the transaction message which was returned 
             // from the transaction body's execute() method
             
-            String message = clientSession.withTransaction(transactionBody, transactionOptions);
-
-            System.out.println(message);
 
         } catch (RuntimeException e) {
             System.out.println(e);
