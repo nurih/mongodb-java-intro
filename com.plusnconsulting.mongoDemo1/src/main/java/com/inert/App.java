@@ -1,6 +1,7 @@
 package com.inert;
 
 import java.util.concurrent.TimeUnit;
+
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
@@ -81,6 +82,14 @@ public class App {
             for(Document doc : ratings){
                 System.out.println(doc.toJson());
             }
+            
+            
+            System.out.println("*** Direct Command");
+
+            Document mongoCommand = new Document().append("listDatabases",1);
+            Document commandResult = client.getDatabase("admin").runCommand( mongoCommand);
+
+            System.out.println(commandResult.toJson());
 
             ///////////////
             /// wait
