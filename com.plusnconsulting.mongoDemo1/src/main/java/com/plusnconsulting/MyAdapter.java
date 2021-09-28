@@ -13,7 +13,9 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.reactivestreams.client.AggregatePublisher;
 import com.mongodb.reactivestreams.client.FindPublisher;
+import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoCollection;
+import com.mongodb.reactivestreams.client.MongoDatabase;
 import com.mongodb.reactivestreams.client.Success;
 
 import org.bson.Document;
@@ -45,6 +47,12 @@ public final class MyAdapter {
         Bson groupStage = group("$name", avg("averageRating", "$ratings.rating"));
 
         AggregatePublisher<Document> result = collection.aggregate(Arrays.asList(unwindStage, groupStage));
+        return result;
+    }
+
+    public static Publisher<Document> runCommand(MongoClient client, String dbName, Document command){
+        MongoDatabase db = client.getDatabase(dbName);
+        Publisher<Document> result = db.runCommand(command);
         return result;
     }
 
